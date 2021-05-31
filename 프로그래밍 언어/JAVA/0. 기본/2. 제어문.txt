@@ -1,14 +1,14 @@
 ■ 2. 제어문
 
 ◎ 제어문 종류
-    - 조건문, 반복문, 분기문
+    - 조건문, 반복문, 분기문, 기타문
     
 ◎ 조건문
     - if : if (조건) { 내용 } 형식으로 쓰며 조건에는 boolean 값만 들어갈 수 있다.
     - else : if 문이랑 짝으로 쓰인다. else { 내용 } 형식으로 쓰인다.
     - switch-case : 아래와 같은 형식으로 쓰이며 비교 타입은 정수만 가능하며 JAVA SE 7부터 문자열도 사용할 수 있다. 
         - JAVA SE 12부터는 switch문을 식으로도 사용가능하며 반환은 break를 사용하거나 SE 13부터는 yield를 사용한다.
-        <code>
+        - <code>
             int num = 1;
             switch (num) 
             {
@@ -22,7 +22,7 @@
                     System.out.println("많소");
                     break;
             }
-        </code>
+        - </code>
         
 ◎ 반복문
     - while : while (조건) { 내용 } 형식으로 쓰이며 조건에는 boolean값만 들어갈 수 있다. 조건이 true일 때 내용이 계속 돌아간다.
@@ -36,3 +36,8 @@
     - break : 현재 반복문을 탈출한다. 만약 레이블 이름을 달면 해당 레이블의 반복문을 탈출한다.
     - coninue : 현재 반복문에서 다음 반복으로 넘어간다. 만약 레이블 이름을 달면 해당 반복문의 다음 반복으로 넘어간다.
     - yield : JAVA SE 13에 추가된 분기문으로 switch 식의 반환에 사용된다.
+    
+◎ 기타문
+    - try-catch-finally : 흔히 아는 예외처리 문이다.
+    - try-with-resource : try(Autoclosable 초기화식) { ... } catch { ... } 형식으로 쓰인다. 이러면 try 블럭을 나갈 때 자동으로 Autoclosable 변수의 close()를 호출해준다.
+        - 초기화식은 ;를 붙여 여러개를 넣을 수도 있다.

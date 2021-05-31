@@ -1,0 +1,36 @@
+■ 6. 제네릭
+
+◎ 제네릭
+    - 제네릭은 타입을 변수처럼 쓸 수 있게 하는 휼륭한 기능이다. 주로 어떤 타입을 저장하는 컬렉션을 만들 때 사용된다.
+    - <code>
+        public class Wrap<T>
+        {
+            private T value;
+            public T getValue() { return value; }
+            public void setValue(T value) { this.value = value; }
+        }
+        
+        public class Main
+        {
+            public static void Main(string[] args)
+            {
+                Wrap<Integer> wrap = new Wrap<Integer>();
+                wrap.setValue(3);
+                
+                System.out.println(wrap.getValue());
+            }
+        }
+    - </code>
+    
+    - T를 제네릭 인자라고 부른다.
+    - 제네릭 인자는 참조 타입만 들어올 수 있다. 그래서 기본 타입을 인자로 넣고 싶다면 래퍼 클래스를 사용할 수 밖에 없다.
+    - 제네릭 인자에 extends 타입명을 붙여서 인자의 타입이 특정 타입을 상속해야만 들어올 수 있게 제한할 수 있다.
+    - 메소드의 반환타입 앞에 <T>를 넣어줘서 제네릭 메소드를 만들 수도 있다.
+
+
+◎ 와일드카드
+    - 클래스 변수의 제네릭 인자에 와일드카드, '?'를 넣어서 어떤 제네릭 객체든 받을 수 있게 할 수 있다.
+    - 사용처는 주로 와일드카드에 타입 제약을 걸어서 특정 타입을 상속하거나 상속받는 타입만 들어올 수 있게 할 수 있다.
+    - <? extends 타입명>를 통해 하위 타입의 객체만 오게 할 수 있다.
+    - <? super 타입명>을 통해 상위 타입의 객체만 오게 할 수 있다.
+    
