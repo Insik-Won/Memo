@@ -1,0 +1,48 @@
+■ 8. 람다식
+
+◎ 함수형 인터페이스
+	- 함수형 인터페이스는 람다식을 받기 위해 사용되는 인터페이스이다.
+	- 함수형 인터페이스의 조건은 미구현된 메소드가 하나만 있는 것이다. 즉 기본 구현된 메소드나 정적 메소드가 있어도 미구현된 메소드 하나만 있으면 함수형 인터페이스가 된다.
+	- @FunctionalInterface 어노테이션을 인터페이스에 적용하면 인터페이스가 함수형 인터페이스의 조건에 맞지 않을 시 에러를 던진다.
+	
+◎ 람다식
+	- (인자1, 인자2, ...) -> { 내용 }
+	- 람다식은 위와 같은 형태를 가진다. 인자가 하나 밖에 없으면 소괄호는 생략해도 되며 내용이 식 하나이면 대괄호 생략, return도 생략 가능하다.
+	- 인자 개수, 인자 타입, 반환 타입이 같다면 함수형 인터페이스인 타입의 변수로 람다식을 받을 수가 있다.
+	- JAVA8부터 쓸 수 있다.
+		- <code>
+			@FunctionalInterface
+			public interface IntBinaryOperator {
+				int op(int lhs, int rhs);
+			}
+			
+			IntBinaryOperator add = (lhs, rhs) -> lhs + rhs;
+			
+			println(add(1,2));
+		- </code>
+		
+◎ 메소드 참조 
+	- 클래스명::정적메소드명, 객체명:메소드명을 통해 객체의 메소드나 정적 메소드도 람다식처럼 사용할 수 있다.
+	- 클래스명::new 를 통해 생성자도 람다식처럼 사용할 수 있다.
+		- <code>
+			import java.util.function.*;
+			
+			public class Main
+			{
+				public static void Main(String[] args)
+				{
+					Consumer<String> foo = System.out.println;
+					foo.accept("Hello World!");
+				}
+			}
+		- </code>
+		
+◎ 주요 함수형 인터페이스
+	- 함수를 저장하고 싶을 때마다 함수형 인터페이스를 일일히 선언하기는 힘들다. 이를 위해 자바 공식 라이브러리는 java.util.function 패키지에서 여러 인터페이스를 지원한다.
+		- Consumer<T> : 매개변수 T, 반환 없음, 메소드는 void accept(T t)
+		- Supplier<T> : 매개변수 없음, 반환 타입 T, 메소드는 T get()
+		- Function<T, R> : 매개변수 T, 반환 타입 R, 메소드는 R apply(T t)
+		- Predicate<T> : 매개변수 T, 반환 타입 boolean, 메소드는 boolean test(T t)
+		- XXXOperator : 매개변수와 반환 타입 존재, 연산자를 표현한다. 메소드명은 applyXXX이다.
+	- 이외에도 각 인터페이스마다 인자를 두개 받거나 기본 타입을 사용하는 변종 인터페이스도 있다.
+		

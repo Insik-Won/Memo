@@ -1,0 +1,32 @@
+■ 5. 열거형
+
+◎ 열거형 (Enum)
+	- 열거형은 일련의 상수값을 포함하는 타입을 정의한다.
+	- <코드>
+		public enum Color { RED, YELLOW, BLUE }
+		public enum RGB {
+			RED(255, 0, 0),
+			GREEN(0, 255, 0),
+			BLUE(0, 0, 255);
+			
+			private final int red;
+			private final int green;
+			private final int blue;
+			
+			RGB(int red, int green, int blue) 
+			{
+				this.red = red;
+				this.green = green;
+				this.blue = blue;
+			}
+			
+			public getRed() { return red; }
+			public getGreen() { return green; }
+			public getBlue() { return blue; }
+		}
+	- </코드>
+	
+	- 자바의 열거형은 클래스로 취급되며 자동으로 java.lang.Enum 클래스를 상속받는다.
+		- 그래서 클래스의 특징인 필드, 메소드 등을 가질 수가 있다.
+	- 열거형의 값들은 정적 메소드, values()를 통해 배열로 받을 수 있다.
+	- 열거는 이름으로만 식별되는 단순한 상수지만 내부적으로는 정수로 처리한다. 이 값은 ordinal() 메소드를 통해 알아낼 수 있다.
