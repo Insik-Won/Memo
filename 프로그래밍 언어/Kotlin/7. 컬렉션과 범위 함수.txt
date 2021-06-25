@@ -1,0 +1,50 @@
+■ 7. 컬렉션과 범위 함수
+
+◎ 컬렉션
+	- 코틀린의 컬렉션은 상수성에 따라 불변과 가변으로 나늬며 종류에 따라 List, Set, Map으로 나늰다.
+	- 기존 자바의 컬렉션은 kotlin.collections 패키지에서 별칭으로 제공한다.
+	
+	- List는 순서가 있고 중복을 허용하고 인덱스 접근을 허용하는 컬렉션이다.
+		- MutableList는 List의 가변 버전이다.
+		- listOf, mutableListOf, arrayListOf 함수로 생성할 수 있다.
+		- 기본 구현은 ArrayList이다.
+		
+	- Set은 중복을 불허하는 집합 컬렉션이다.
+		- MutableSet은 Set의 가변 버전이다.
+		- setOf, mutableSetOf, hashSetOf, linkedSetOf, sortedSetOf 함수로 생성할 수 있다.
+		- 기본 구현은 LinkedHashSet이다. 순서가 있다.
+		- 대안으로 HashSet을 선택할 수도 있다. 순서가 없고 메모리가 덜 든다.
+		
+	- Map은 키의 중복을 불허하는 사전 컬렉션이다.
+		- MutableMap은 Map의 가변 버전이다.
+		- mapOf, mutableMapOf, hashMapOf, linkedMapOf, sortedMapOf 함수로 생성할 수 있다.
+		- 기본 구현은 LinkedHashMap이다. 순서가 있다.
+		- 대안으로 HashMap을 선택할 수 있다. 순서가 없고 메모리가 덜 든다.
+		- to 함수를 사용해서 맵의 키값요소를 손쉽게 넣을 수 있다.
+		
+	- 코틀린의 컬렉션에는 스트림 함수를 바로 호출할 수 있다. 그 함수 목록은 다음과 같다.
+		- map, mapIndexed, mapNotNull, flatMap, groupBy, 
+		- filter, take, takeLast, takeWhile, takeLastWhile, drop, dropLast, dropWhile, dropLastWhile, 
+		- first, last, firstOrNull, lastOrNull, distinct, distnctBy,  
+		- zip, joinToString, count, reduce, reduceRight, forEach, toArray
+		- etc
+		
+◎ 범위 함수
+	- 코틀린에서 범위 함수는 한 객체를 context로 삼아 스코프 내의 코드를 실행시키는 함수를 말합니다.
+	- 범위 함수를 통해 객체의 프로퍼티를 스코프에서 바꾼다던가 임시 변수 없이 바로 객체를 처리하는 게 가능합니다.
+	- 범위 함수의 종류는 다음과 같다.
+		- 이름	: 	{ 참조	반환식			확장 함수 여부 }
+		- let 		:	{ it, 		람다 결과, 		O 	}	
+		- run 	:	{ this, 	람다 결과, 		O 	}
+		- run 	:	{ X, 		람다 결과, 		X : 객체를 받지 않는다. }
+		- with 	:	{ this, 	람다 결과, 		X : 객체를 인자로 받는다. }
+		- apply : 	{ this, 	상황 객체, 		O 	}
+		- also 	:	{ it, 		상황 객체, 		O 	}
+		
+	- 위 범위 함수의 간략한 용도는 다음과 같다.
+		- let : 객체에 람다식 수행, 표현식에 람다식 수행 
+		- apply : 객체의 설정 구성
+		- run : 객체의 설정 구성 후 결과 반환, 임시 문장 수행 후 결과 반환
+		- also : 추가 코드 적용
+		- with : 객체에 함수 여러개 적용 
+						

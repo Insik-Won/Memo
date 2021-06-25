@@ -1,0 +1,158 @@
+■ 5. 프로퍼티와 클래스 심화
+
+◎ 중첩 클래스와 내부 클래스
+	- 중첩 클래스는 클래스 선언을 중첩해서 만들 수 있다. 클래스의 이름으로 생성해서 접근할 수 있다.
+	- 내부 클래스는 중첩 클래스 선언에 inner 키워드를 붙여서 만들 수 있다. 객체의 이름으로 생성해서 접근할 수 있다.
+		- 자바의 인스턴스 클래스와 동일하다.
+		
+◎ 함수형 인터페이스
+	- 코틀린에서 함수형 인터페이스는 인터페이스 선언에 fun을 붙여서 선언할 수 있다.
+	- 함수형 인터페이스의 조건은 하나의 추상 함수만 가져야한다는 것이다.
+
+◎ 데이터 클래스
+	- 클래스 선언 앞에 data 키워드를 붙여서 데이터 클래스를 만들 수 있다.
+	- 데이터 클래스의 목적은 데이터를 가지고 옮기는 목적이다.
+	- 데이터 클래스는 다음과 같은 지원을 가진다.
+		- equals() / hashCode() 자동 구현
+		- toString() 자동 구현 -> "클래스명(필드명=값 ...)"
+		- componentN()을 필드 선언 순서에 따라 자동 구현
+		- copy() 자동 구현
+	- 데이터 클래스가 될려면 다음과 같은 조건이 있다.
+		- 주 생성자는 하나 이상의 매개변수를 가져야 한다.
+		- 주 생성자의 모든 매개변수는 val 혹은 var이어야 한다.
+		- abstract, open, sealed, inner가 아니여야 한다.
+	- 데이터 클래스가 되면 다음과 같은 조건을 가진다.
+		- equals(), hashCode(), toString()가 정의되어 있거나 상위 클래스에서 final로 막혀있다면 이 함수들의 자동구현은 보장되지 않는다.
+		- 만약 상위 클래스에서 componentN() 함수가 open으로 구현되어 있고 멤버들에 상응하는 타입을 반환한다면 componentN() 함수는 자동으로 오버라이딩되어 구현될 것이다. 만약 상위 클래스의 componentN()이 위 조건을 갖추지 않거나 final로 막혀있다면 오류를 던질 것이다.
+		- componentN() 함수와 copy() 함수의 구현은 금지된다.
+	- 데이터 클래스의 자동구현 함수는 주 생성자에 있는 프로퍼티만 쓴다. 그래서 주 생성자에 없는 프로퍼티는 제외된다.
+	- 데이터 클래스의 copy 함수는 다음과 같이 구현된다.
+		- fun copy(name: String = this.name, age: Int = this.age) = User(name, age)
+
+◎ Enum 클래스
+	- Enum 클래스의 목적은 타입적인 열거형을 만들기 위해서이다.
+	- Enum 클래스의 각 열거 상수는 객체이며 콤마로 구분되며 세미콜론으로 끝날 수 있다.
+	- 열거 상수는 객체이기에 생성자 호출을 명시할 수 있으며 익명 객체로 구현할 수도 있다.
+	- Enum 클래스는 인터페이스를 상속할 수 있지만 클래스는 상속 불가능하다. 실제로는 Enum 클래스를 상속하기 때문이다.
+	- Enum 클래스는 다음과 같은 정적 함수를 가진다. 이때 클래스 이름은 EnumClass로 가정한다.
+		- EnumClass.valueOf(value: String): EnumClass
+		- EnumClass.values(): Array<EnumClass>
+	- Enum 클래스의 상수 객체는 자신의 이름과 위치를 나타내는 프로퍼티를 가진다.
+		- val name: String
+		- val ordinal: Int
+		
+	- <code>
+		enum class Direction {
+			NORTH, SOUTH, WEST, EAST
+		}
+		enum class Color(val rgb: Int) {
+			RED(0xFF0000),
+			GREEN(0x00FF00),
+			BLUE(0x0000FF)
+		}
+		enum class ProtocolState {
+			WAITING {
+				override fun signal() = TALKING
+			},
+
+			TALKING {
+				override fun signal() = WAITING
+			};
+
+			abstract fun signal(): ProtocolState
+		}
+	- </code>
+	
+◎ Sealed 클래스와 인터페이스
+	- Sealed 클래스/인터페이스는 상속을 강력하게 통제한다. Sealed 타입의 모든 하위 타입은 모듈이 컴파일될 때 알려져 있어야 하며 따라서 다른 모듈은 해당 타입을 상속하지 못한다.
+	- Sealed 클래스는 그 자체로 abstract이다. 그래서 abstract 멤버를 가질 수 있다.
+	- Sealed 클래스의 생성자는 protected(기본)이거나 private이여야 한다.
+	- Sealed 타입의 자식 타입은 모두 같은 패키지에 선언되어야 한다. 또한 그 하위 타입의 멤버는 상속에 따르면서 접근 지정을 자유롭게 할 수 있으며 지역 클래스나 익명 객체가 될 수는 없다.
+	- Sealed 타입으로 패턴매칭을 할 때 모든 알려진 클래스를 명시했다면 else는 불필요하다.
+	
+◎ Inline 클래스
+	- 가끔씩 특정 타입을 감싸는 래퍼 클래스를 만들어야할 때가 있다. 이때 래퍼 클래스는 힙에서 메모리를 할당해야되서 오버헤드가 생기는데 거기에 대상 타입이 기본 타입이라면 성능은 처참해진다.
+	- 이를 막기 위해서 코틀린은 인라인 클래스를 도입했다. 인라인 클래스는 value 키워드를 클래스 선언 앞에 붙여 선언할 수 있다. 인라인 클래스는 멤버의 참조를 가지지 않고 오직 값만 가진다. 
+	- inline 키워드는 deprecated되었으며 JVM 백엔드와 상호작용을 할려면 @JvmInline 어노테이션을 붙이면 된다.
+	- 인라인 클래스는 간단한 프로퍼티만 가질 수 있다. 그래서 lateinit이나 프로퍼티 위임은 할 수 없다.
+	- 인라인 클래스는 클래스 상속은 불가능하고 인터페이스만 상속 가능하다.
+	- 인라인 타입은 그 자체로만 값 타입으로 작동한다. 만약 제네릭에 넣거나 인터페이스 혹은 nullable 타입으로 형변환한다면 박싱되어 참조 타입으로 작동된다.
+	- 인라인 타입은 실제론 그 멤버의 타입으로 변환되어 작동하기에 그 타입과 관련된 함수의 이름은 해쉬 함수로 맹글링된다. 그래서 자바에서 이 함수를 호출하게 할려면 @JvmName("함수이름") 어노테이션을 추가하면 된다.
+	
+◎ 클래스 위임
+	- 위임 패턴은 상속을 구현하기에 좋은 패턴이다. 코틀린은 by 키워드를 통해 위임 패턴을 지원한다.
+	- by를 통해 클래스를 위임해도 오버라이딩은 정상적으로 작동한다. 하지만 만약 오버라이딩한 멤버가 상위 클래스에서 접근하고 있다면 오버라이딩은 먹히지 않는다.
+	
+	- <code>
+		interface Base {
+			fun print()
+		}
+
+		class BaseImpl(val x: Int) : Base {
+			override fun print() { print(x) }
+		}
+
+		class Derived(b: Base) : Base by b
+
+		fun main() {
+			val b = BaseImpl(10)
+			Derived(b).print()
+		}
+	- </code>
+		
+◎ 프로퍼티 심화
+	- 프로퍼티에 const 키워드를 붙여서 상수 필드로 만들어버릴 수도 있다. 이때 조건이 있다.
+		- 탑 레벨, object 클래스, 동반 객체 중 하나이거나
+		- 기본 타입이나 String 타입의 객체로 초기화되어야 한다.
+		- getter는 선언하지 말아야 한다.
+		
+	- 프로퍼티에 lateinit 키워드를 붙여서 늦은 초기화를 시킬 수 있다. 아래의 조건이 있다.
+		- var에서만 사용 가능하며 언제든지 초기화를 변경할 수 있다.
+		- null로 초기화를 할 수 없다.
+		- 초기화 전에는 변수에 접근할 수 없다.
+		- 기본 타입은 사용 불가능이다.
+		- getter와 setter 선언이 불가능하다.
+		- null로 기본 초기화는 옵션이다. Java와 상호운용하거나 명시가 필요한 경우에만 하면 된다.
+		- ::프로퍼티명.isInitialized를 통해 초기화 여부를 확인할 수 있다.
+	
+	- 프로퍼티 뒤에 by lazy 키워드를 붙여서 지연 초기화를 시킬 수 있다. 아래의 조건이 있다.
+		- 호출 시점에 by lazy 정의에 의해서 초기화를 진행한다.
+		- val에서만 사용할 수 있다.
+		- 초기화를 위해선 함수명이라도 한번 적어줘야 한다.
+		- lazy를 사용하는 경우 기본적으로 동기적으로 동작한다.
+		- <code>
+			val sampleAdapter: SampleAdapter by lazy {
+				SampleAdapter(ImageLoaderAdapterViewModel(this, 3))
+			}	
+		- </code>
+		
+	- 프로퍼티 선언 뒤에 by 표현식을 붙여서 프로퍼티 정의를 위임할 수 있다. 이때 표현식의 반환형은 위임자여야 된다.
+		- 위임자는 상속해야할 인터페이스는 없지만 getValue()와 필요에 따라 setValue()의 연산자 오버로딩을 지원해야 한다.
+		- val 프로퍼티를 위임할려면 다음과 같은 조건의 매개변수를 가진 getValue() 연산자 오버로딩을 지원해야 한다.
+			- thisRef : 프로퍼티를 선언한 타입이나 그 상위 타입이 되어야 한다.
+			- property : KProperty<*> 타입이나 그 상위 타입이 되어야 한다.
+		- var 프로퍼티를 위임할려면 위 조건에 추가로 다음과 같은 조건의 매개변수를 가진 setValue() 연산자 오버로딩을 지원해야 한다.
+			- value : 위임할 프로퍼티 타입이나 그 상위 타입이 되어야 한다.
+		- 위임자를 제공하는 객체를 만들어낼 수도 있다. 위임자 제공 객체는 다음과 같은 조건을 가진다.
+			- getValue의 경우와 같은 조건의 provideDelegate() 연산자 오버로딩을 지원해야 한다.
+			
+		- <code>
+			class Example {
+				var p: String by Delegate()
+			}
+		- </code>
+		
+		- <code name="위임자 선언">
+			import kotlin.reflect.KProperty
+
+			class Delegate {
+				operator fun getValue(thisRef: Any?, property: KProperty<*>): String {
+					return "$thisRef, thank you for delegating '${property.name}' to me!"
+				}
+
+				operator fun setValue(thisRef: Any?, property: KProperty<*>, value: String) {
+					println("$value has been assigned to '${property.name}' in $thisRef.")
+				}
+			}
+		- </code>
+		
