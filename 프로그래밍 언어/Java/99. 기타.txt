@@ -1,0 +1,29 @@
+■ 기타
+
+◎ 가변 인자
+    - 메소드의 인자를 가변으로 받을 수 있다. 
+    - 인자타입 뒤에 ...를 넣으면 그 인자는 가변인자가 된다. 이때 인자 타입은 실제로는 배열로 처리된다.
+    
+    - <code>
+        public class Main
+        {
+            public static void printAll(String... args)
+            {
+                for (String e : args)
+                {
+                    System.out.print(e);
+                }
+                System.out.println();
+            }
+            
+            public static void Main(String[] args)
+            {
+                printAll("Hello ", "World!");
+                printAll("안녕", "하세", "요");
+                printAll();
+                
+                String[] strs = { "my name is ", "dotnet" };
+                printAll(strs);                
+            }
+        }
+    - </code>

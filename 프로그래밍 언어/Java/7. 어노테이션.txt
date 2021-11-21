@@ -1,0 +1,71 @@
+■ 7. 어노테이션
+
+◎ 어노테이션이란?
+	- 어노테이션은 클래스나 메소드, 매개변수 등의 앞에 붙어서 추가적인 정보를 기술하거나 동작을 수행하도록 하는 기능이다.
+	- 주로 쓰는 어노테이션은 다음과 같다.
+		- @Overrides : 해당 메소드가 오버라이딩된 메소드라고 명시하는 어노테이션이다.
+		- @SuppressWarnings : 경고를 씹을 때 사용하는 어노테이션이다.
+		- @FunctinalInterface : 해당 인터페이스가 함수형 인터페이스라는 것을 명시하는 어노테이션이다. 함수형 프로그래밍에 쓰인다.
+	
+◎ 어노테이션 만들기
+	- 어노테이션은 다음과 같이 정의한다:
+		- <code>
+			@interface 어노테이션명 {
+				타입 필드명();
+				타입 필드명();
+				...
+			}
+		- </code>
+		
+		- <code>
+			@interface Description {
+				String word();
+				int importance() default 3;
+			}
+			
+			@Description(word = "안녕", importance = 2)
+			public class Hello {
+				@Description(word = "Hello하는 메소드입니다.")
+				public static void hello() { System.out.println("hello!"); }
+			}
+		- </code>
+		
+		- 만약 어노테이션을 사용할 때 모든 필드에 값을 줘야된다. 만약 주지 않으면 컴파일 에러를 던진다.
+		- 필드가 하나만 있으면 필드 이름은 생략해도 되며 인자가 없으면 소괄호는 생략해도 된다.
+		- 필드 타입은 기본 타입과 그 배열을 사용할 수가 있다.
+		- 필드에 default 기본값; 을 줘서 기본값을 줄 수 있다.
+		
+◎ Target 어노테이션
+	- Target 어노테이션은 어노테이션의 적용범위를 제한하기 위한 어노테이션이다.
+	- 그냥 만든 어노테이션은 클래스나 메소드나 어디든 잘 붙는다. 적용 영역을 제한하기 위해 Target 어노테이션을 쓴다.
+	- java.lang.annoation 패키지에 있으며 타입 구분은 ElementType 열거형을 쓴다.
+		- <code>
+			import java.lang.annotation.*
+			
+			@Target(ElementType.TYPE)
+			@interface Description {
+				String word();
+				int importance() default 3;
+			}
+			
+			@Description(word = "안녕", importance = 2)
+			public class Hello {
+				// 에러 발생 : @Description(word = "Hello하는 메소드입니다.")
+				public static void hello() { System.out.println("hello!"); }
+			}
+		- </code>
+		
+◎ Retention 어노테이션
+	- Retention 어노테이션은 리플렉션을 통해 어노테이션을 접근하고 싶을 때 사용하는 어노테이션이다.
+	- 인자는 RetentionPolicy 열거형을 받으며 이 열거형의 상수는 다음과 같다:
+		- RUNTIME : 런타임에 어노테이션 접근 가능
+		- CLASS : .class 파일에 어노테이션이 저장, 런타임에 접근 불가능
+		- SOURCE : 어노테이션이 아무곳에도 저장되지 않게 할 때 사용한다. 주로 컴파일 도구를 만들 때 사용된다.
+		
+◎ Inherited 어노테이션
+	- Inherited 어노테이션을 사용하면, 어노테이션이 적용될 때 하위 클래스에도 적용이 된다.
+	
+◎ Documented 어노테이션
+	- Documented 어노테이션은 JavaDoc이라는 도구에게 어노테이션이 문서에 나타나야 된다는 신호를 준다.
+	
+	

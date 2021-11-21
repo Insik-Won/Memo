@@ -1,0 +1,159 @@
+■ 12. 멀티스레드
+
+◎ 참조: https://honbabzone.com/java/java-thread/
+
+◎ 프로세스와 멀티스레드	
+	- 프로세스는 프로그램이 운영체제로부터 필요한 메모리를 할당받아 실행된 인스턴스를 말한다. 멀티 프로세스는 한 컴퓨터에서 두개 이상의 같은 프로세스가 실행되고 있는 걸 뜻한다.
+	- 스레드는 프로세스에서 흘러가는 작업을 뜻한다. 멀티스레드는 한 프로세스 속에서 여러 작업이 한번에 실행되는 것을 뜻한다.
+	- 멀티 프로세스에선 프로세스마다 할당받은 고유의 메모리를 서로 침범할 수 없지만 멀티 스레드에서 프로세스가 할당받은 메모리를 서로 공유하기 때문에 하나의 스레드에서 예외가 발생하면 프로세스 자체가 종료될 수 있다.
+	
+◆ 자바의 멀티스레드
+	
+◎ Thread 클래스 
+	- 모든 자바 어플리케이션은 Main Thread가 main() 메소드를 실행하면서 시작된다. 멀티스레드를 할려면 메인 스레드에서 별도의 스레드를 만들어 실행시키면 된다.
+	- 자바의 Thread 클래스는 java.lang.Thread 패키지에 있다.
+	
+◎ Thread 생성
+	- Thread를 만들려면 Thread 객체를 생성자에 Runnable 객체를 넣어서 만들거나 Thread 클래스를 상속하고 run 메소드를 오버라이딩해서 만들 수 있다.
+	- JAVA8 이후에는 간단하게 람다식을 사용하면 된다.
+		- <code>
+			class Task implements Runnable {
+				@Override
+				public void run() {
+					int sum = 0;
+					for (int index = 0; index < 10; index++) {
+						sum += index;
+						System.out.println(sum);
+					}
+					System.out.println( Thread.currentThread() + "최종 합 : " + sum);
+				}
+			}
+			
+			class CustomThread extends Thread {	   
+				@Override
+				public void run() {
+					int sum = 0;
+					for (int index = 0; index < 10; index++) {
+						sum += index;
+						System.out.println(sum);
+					}
+					System.out.println( Thread.currentThread() + "최종 합 : " + sum);
+				}
+			}
+			
+			Runnable task1 = new Task();			
+			Runnable task2 = () -> {
+				int sum = 0;
+				for (int index = 0; index < 10; index++) {
+					sum += index;
+					System.out.println(sum);
+				}
+				System.out.println( Thread.currentThread() + "최종 합 : " + sum);
+			}
+			
+			Thread subThread1 = new Thread(task1)
+			Thread subThread2 = new Thread(task2);
+			Thread subThread3 = new CustomThread()
+			subThread1.start();
+			subThread2.start()
+			subThread3.start()
+		- </code>
+		
+◎ 데몬 스레드
+	- 데몬 스레드는 메인 스레드의 작업을 돕는 보조적인 역할을 수행하는 스레드이며 메인 스레드가 종료되면 자연스럽게 종료된다. 
+	- 데몬 스레드를 만들러면 스레드를 만들고 해당 스레드에 setDaemon(true) 메소드를 실행하면 된다.
+
+◎ 스레드의 이름과 우선순위
+	- 스레드에 setName() 메소드를 사용해서 이름을 설정할 수 있다. 보통 디버그 목적으로 사용된다.
+	- 스레드에 setPriority() 메소드를 사용해서 우선순위를 설정할 수 있다. 우선순위 값은 Thread 클래스에 정적 필드로 존재한다.
+	
+◎ 동기화 메소드와 동기화 블록
+	- 멀티스레드 환경에서는 스레드들이 객체를 공유하며 작업하는 경우가 생기기 때문에 A스레드와 B스레드가 한 객체를 동시에 접근하는 경우가 생긴다. 이때 생기는 부작용을 막기 위해 자바는 동기화를 하기 위한 목적으로 synchronized 키워드를 제공한다.	
+	- 동기화 블럭/메소드 안에서는 오직 한 스레드만 그 블럭/메소드를 실행할 수 있다. 그동안 다른 스레드는 대기 상태에 놓인다.	
+		- <code>
+			private Object lockObject = new Object();
+			
+			public void setValue1( int value ) {
+				synchronized ( lockObject ) {
+					this.value = value;
+					try {
+						Thread.sleep(2000);
+					} catch (Exception e) {
+					}
+					System.out.println(Thread.currentThread().getName() + "의 Value 값은 " + this.value +"입니다.");
+				}
+			}
+			
+			public synchronized void setValue2( int value ) {	
+				this.value = value;
+				try {
+					Thread.sleep(2000);
+				} catch (Exception e) {
+				}
+				System.out.println(Thread.currentThread().getName() + "의 Value 값은 " + this.value +"입니다.");			
+			}
+		- </code>
+		
+◎ Thread의 상태
+	- 스레드는 실행대기/일시정지/실행/종료 상태를 가진다.
+		- 실행대기 상태는 실행 중이나 아직 CPU를 점유하지 못한 상태를 의미한다.
+		- 실행 상태는 실행 중이고 CPU를 점유해서 작업하고 있는 상태를 의미한다.
+		- 일시정지 상태는 잠시 어떠한 이유로 일시정지된 상태를 의미한다.
+		- 종료 상태는 실행이 끝나고 자원을 반납한 상태를 의미한다
+		- 실행대기 -> 실행 : yield()
+		- 실행 -> 일시정지 : sleep(), join(), wait()
+		- 일시정지 -> 실행대기 : interrupt(), notify(), notifyAll()
+		
+◎ 스레드 그룹
+	- 스레드 그룹이란 스레드를 그룹으로 묶어서 한번에 관리할 목적으로 사용된다. 이를 사용하면 여러 스레드를 한 스레드처럼 관리하고 제어할 수 있다. 자바에서는 ThreadGroup이라는 클래스를 통해 스레드그룹을 지원한다.
+	- ThreadGroup에 자식 스레드/스레드그룹을 추가할 때는 스레드/스레드구릅을 생성할 때 인자로 ThreadGroup 객체를 넣어주어 추가한다.
+		
+◎ 스레드풀 
+	- 스레드풀은 스레드를 일정량만 생성하여 스레드 수가 갑작스레 늘어나지 않도록 하는 방법이다.
+	- 자바에서는 java.util.concurrent 패키지에 ExecutorService 인터페이스와 Executors 클래스의 newCachedThreadPool() / newFixedThreadPool() 정적 메소드를 통해 스레드풀을 지원한다.
+		- <code>
+			// 스레드 풀 생성 
+			//1. 자동으로 스레드 수 생성
+			ExecutorService executorServiceWithCached = Executors.newCachedThreadPool();
+
+			//2. 원하는 개수만큼 생성
+			ExecutorService executorServiceWithNum = Executors.newFixedThreadPool(2);
+
+			//3. 최대치로 생성
+			ExecutorService executorServiceWithMax = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
+			//4. 완전 수동
+			// ThreadPoolExecutor( 코어 스레드 수, 최대 스레드 개수, 놀고 있는 시간, 놀고있는 시간 단위, 작업 큐 )
+			ExecutorService executorServiceWithCustom = new ThreadPoolExecutor(3, 100, 120L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
+		- </code>
+		
+	- 스레드풀을 종료하는 방법은 여러가지이다.
+		- <code>
+			// 1. 작업 큐에 대기하고 있는 모든 작업이 끝난 뒤 스레드를 종료한다. 
+			executorServiceWithCached.shutdown();
+
+			// 2. 당장 중지한다. 리턴값은 작업큐에 남아있는 작업의 목록이다.
+			List<Runnable> runable = executorServiceWithCached.shutdownNow();
+
+			// 3. 작업은 대기 하지만 모든 작업처리를 특정 시간안에 하지 못하면 작업중인 스레드를 중지하고 false를 리턴한다. 아래는 100초 설정
+			try {
+				boolean isFinish = executorServiceWithCached.awaitTermination(100, TimeUnit.SECONDS);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		- </code>
+		
+	- 스레드풀에 작업 요청하기
+		- 스레드풀에 작업을 요청할 때는 Runnable/Callable<T> 함수형 인터페이스를 사용한다. Runnable은 execute() 메소드에, Callable은 submit 메소드에 넣는다.
+		- Runnable은 실행만 하고 끝낼 목적으로, Callable<T>는 실행을 하고 Future<T>로 결과를 받을 목적으로 쓰인다. Future<T>로 받은 결과는 get() 메소드를 통해 받을 수 있다.
+		- 작업 도중 오류 발생 시 execute()는 해당 스레드를 스레드풀에서 제거하지만 submit은 해당 스레드를 제거하지 않는다.
+		- submit에 Runnable 객체를 넣을 수도 있다. 이때는 submit에 임의로 반환할 객체를 넣어주면 된다.
+		
+	- 스레드풀 심화과정
+		- 스레드풀에 작업을 요청하고 모든 작업을 일괄로 처리하고 싶다면 CompletionService 인터페이스를 구현한 ExecutorCompletionService 객체를 생성해 사용하면 된다. 이때 생성자에 일괄로 처리하고자 할 스레드풀(Executor 인터페이스 객체)이 들어간다.
+		- 스레드가 작업을 완료할 때까지 while을 통해 지속적으로 관찰할 수도 있지만 콜백 방식을 이용할 수도 있다. 여러 방법이 있지만 그 중 하나는 CompletionHandler 객체를 작업 공유 객체에 넣고 작업 객체가 작업이 끝나면 공유 객체에 있는 CompletionHandler 객체의 핸들러 함수를 호출하는 것이다.
+	
+	
+	
+		
